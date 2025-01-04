@@ -1,5 +1,4 @@
-FROM eclipse-temurin:8-jammy
-LABEL maintainer="jfloff@inesc-id.pt"
+FROM ubuntu:20.04
 
 ###################
 # This Dockerfile was based on the following Dockerfiles
@@ -15,68 +14,29 @@ ENV \
     # device configuration dir
     DEVICE_CONFIGS_DIR=/home/device-config
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 # install packages
-RUN set -ex ;\
+RUN set -ex;\
     apt-get update && apt-get install -y --no-install-recommends \
-          # install sdk
-          # https://wiki.lineageos.org/devices/klte/build#install-the-build-packages
-          android-sdk-platform-tools-common \
-          android-tools-adb \
-          android-tools-fastboot \
-          # install packages
-          # https://wiki.lineageos.org/devices/klte/build#install-the-build-packages
-          bc \
-          bison \
-          build-essential \
-          ccache \
-          curl \
-          flex \
-          g++-multilib \
-          gcc-multilib \
-          git \
-          gnupg \
-          gperf \
-          imagemagick \
-          lib32ncurses5-dev \
-          lib32readline-dev \
-          lib32z1-dev \
-          libelf-dev \
-          liblz4-tool \
-          libncurses5 \
-          libncurses5-dev \
-          libsdl1.2-dev \
-          libssl-dev \
-          libxml2 \
-          libxml2-utils \
-          lzop \
-          pngcrush \
-          rsync \
-          schedtool \
-          squashfs-tools \
-          xsltproc \
-          zip \
-          zlib1g-dev \
-          # extra packages
-          # for repo
-          python3 \
-          # for repo
-          openssh-client \
-          # for ps command
-          procps \
-          # no less on debian *gasp!*
-          less \
-          # so we have an editor inside the container
-          vim \
-          # has 'col' package needed for 'breakfast'
-          bsdmainutils \
-          # unzip is needed at least for Fairphone 4 build
-          unzip \
-          # we can't build kernel on root (like docker runs)
-          # we add these so we have a non-root user
-          fakeroot \
-          sudo \
-          ;\
-    rm -rf /var/lib/apt/lists/*
+    # install sdk
+    # https://wiki.lineageos.org/devices/klte/build#install-the-build-packages
+    android-sdk-platform-tools-common \
+    android-tools-adb \
+    android-tools-fastboot \
+    # install packages
+    # https://wiki.lineageos.org/devices/klte/build#install-the-build-packages
+    bc bison build-essential ccache curl flex g++-multilib gcc-multilib git git-lfs gnupg gperf imagemagick lib32readline-dev lib32z1-dev libelf-dev liblz4-tool libsdl1.2-dev libssl-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool sed squashfs-tools ssh xsltproc zip zlib1g-dev \
+    # Ubuntu 20.04 specific
+    lib32ncurses5-dev libncurses5 libncurses5-dev \
+    # OpenJDK 1.8
+    openjdk-8-jdk \
+    # Python 3
+    python-is-python3 ;\
+    apt-get clean;\
+    rm -rf /var/lib/apt/lists/*;\
+    rm -rf /tmp/*;\
+    rm -rf /var/tmp/*
 
 # run config in a seperate layer so we cache it
 RUN set -ex ;\
@@ -95,6 +55,9 @@ RUN set -ex ;\
     # check this link for things repo check:
     # https://gerrit.googlesource.com/git-repo/+/master/subcmds/init.py#328
     git config --global color.ui true ;\
+    git config --global trailer.changeid.key "Change-Id";\
+    git lfs install;\
+    sed -i 's/TLSv1, TLSv1.1, //g' /etc/java-8-openjdk/security/java.security;\
     # source init when any bash is called (which includes the lineageos script)
     echo "source /etc/profile.d/init.sh" >> /etc/bash.bashrc
 
@@ -110,4 +73,4 @@ RUN mkdir -p "$BASE_DIR" && chown "$USER:$USER" "$BASE_DIR"
 USER $USER
 WORKDIR $BASE_DIR
 
-CMD /bin/bash
+CMD ["/bin/bash"]

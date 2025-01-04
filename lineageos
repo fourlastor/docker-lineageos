@@ -116,7 +116,7 @@ function init {
 
     echo "[INFO] Initializing repository."
     # forces yes to the anoying color output prompt
-    yes | repo init -u $LINEAGEOS_REPO -b $LINEAGEOS_BRANCH
+    yes | repo init -u $LINEAGEOS_REPO -b $LINEAGEOS_BRANCH --git-lfs --no-clone-bundle
 
     # Update tree with the local manifest (if provided)
     if [[ ! -z $LINEAGEOS_LOCAL_MANIFEST_REPO ]]; then
