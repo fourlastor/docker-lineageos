@@ -89,6 +89,7 @@ Here is a list of devices that have configuration files available (check [`devic
 - `bacon` (thanks @GRBurst)
 - `mako` (thanks @brainstorm)
 - `cancro` (thanks Oğuz Ersen - via email)
+- `dragon` (Pixel C)
 
 _**Feel free to open a PR to submit another device configuration.**_
 
@@ -118,6 +119,8 @@ Here is a rundown of all the variables that you can set.
 | **`BASE_DIR`** | Directory where host volume with LineageOS was mounted | *optional* | `/home/$USER` |
 | **`LINEAGEOS_REPO`** | LineageOS repository | *optional* | `https://github.com/LineageOS/android.git` |
 | **`LINEAGEOS_BRANCH`** | LineageOS Branch. | *optional* | `cm-14.1` |
+| **`SYNC_JOBS`** | Parallel jobs for `repo sync`. Higher values can hit HTTP 429 rate limits on android.googlesource.com | *optional* | `4` |
+| **`REPO_GROUPS`** | Manifest groups passed to `repo init -g`. The default skips the macOS (`darwin`) prebuilts | *optional* | `default,-darwin` |
 | **`LINEAGEOS_LOCAL_MANIFEST_REPO`** | LineageOS local manifest repository. | *optional* | |
 | **`LINEAGEOS_LOCAL_MANIFEST_BRANCH`** | LineageOS local manifest branch. | *optional* | |
 | **`PROPRIETARY_BLOBS_REPO`** | Repo with the [device's proprietary blobs](https://wiki.lineageos.org/devices/klte/build#extract-proprietary-blobs). <br>*Example*: `https://github.com/TheMuppets/proprietary_vendor_samsung` |  *optional* | |

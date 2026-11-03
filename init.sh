@@ -34,9 +34,9 @@ rm -f /tmp/current.env
 
 # remounting $BASE_DIR without noexec option
 if cat /proc/mounts | grep $BASE_DIR | grep -q 'noexec'; then
-	sudo mount -o remount,exec $BASE_DIR
+	mount -o remount,exec $BASE_DIR
 	# fixes permissions for mounted dir
-	sudo chown $USER -R $BASE_DIR
+	chown $USER -R $BASE_DIR
 fi
 
 # add colored alias to ls
